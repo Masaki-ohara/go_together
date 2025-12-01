@@ -1,24 +1,58 @@
-# README
+# go-together
+サービスURL 未定
+# サービス概要
+遊びの計画を立てるのが苦手な人に向けて
+遊びの計画を立てやすくするサービス
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# メインのターゲットユーザー
+遊びの計画を立てる人が苦手な人向け
+次どこ行こうか迷う人向け
 
-Things you may want to cover:
+# ユーザーが抱える課題
+遊びの計画を立てるのが意外と時間がかかる
+無計画で遊びに行くと次どこに行くか迷いやすい
 
-* Ruby version
+### 【サービス概要】
+遊びの計画をタイムテーブル通りに遊ぶためのアプリ
 
-* System dependencies
 
-* Configuration
+### ログイン前にできること
 
-* Database creation
+---
+個人プラン(ソロ活用)を立てられる
 
-* Database initialization
+### ログイン後にできること
 
-* How to run the test suite
+---
 
-* Services (job queues, cache servers, search engines, etc.)
+グループを作ってグループの計画を立てられる
+プランをいくつか挙げて投票できるようになります。
+# なぜこのサービスを作りたいのか？
 
-* Deployment instructions
 
-* ...
+# 使用技術
+
+バックエンド
+
+- Ruby '3.1.2’
+- Ruby on Rails 7.2.3
+
+フロントエンド
+
+- React 未定
+
+- Tailwind CSS
+
+インフラ
+
+- 未定
+
+API
+
+- **未定**
+
+# 画面遷移図
+https://www.figma.com/design/W8hbFCZkZF1DCM1n8dCS9m/%E9%81%8A%E3%81%B3%E8%A8%88%E7%94%BB%E3%82%A2%E3%83%97%E3%83%AA?m=auto&t=vIYHpXaMYKm8kxe9-6
+
+# ER図
+[![Image from Gyazo](https://i.gyazo.com/a7b07d8bceb32d8fe0d7645aa63bae6f.png)](https://gyazo.com/a7b07d8bceb32d8fe0d7645aa63bae6f)
