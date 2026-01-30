@@ -5,7 +5,8 @@
 #     end
 # end
 class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsController
-    def create
+
+  def create
     super do |resource|
       if resource.persisted?
         render json: {
@@ -15,7 +16,7 @@ class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsControll
       end
     end
   end
-  
+
   private
 
   def sign_up_params
