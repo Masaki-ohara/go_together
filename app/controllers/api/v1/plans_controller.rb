@@ -18,6 +18,11 @@ module Api
                 plans = Plan.all
                 render json: plans, status: :ok
             end
+
+            def show
+                plan = Plan.find(params[:id])
+                render json: plan, include: :plan_items, status: :ok
+            end
             
             private
             
