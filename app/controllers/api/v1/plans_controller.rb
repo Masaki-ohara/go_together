@@ -24,10 +24,23 @@ module Api
                 render json: plan, include: :plan_items, status: :ok
             end
             
+            def update
+                plan = Plan.find(params[:id])
+                if plan.update(plan_params)
+                    render json: plan, include: :plan_items
+                else
+                    render json: { errors: 'プランの更新に失敗しました' }, status: :unprocessable_entity
+                end
+            end
+
+            # def destroy
+            #   plan = Plan.find(params[:id])
+            # end
+            
             private
             
             def plan_params
-                params.permit(:date, :location, :budget, :title)
+                params.require(:plan).permit(:date, :location, :budget, :title, plan_items_attributes: [:id, :content, :_destroy])
             end
         end
     end
