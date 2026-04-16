@@ -10,6 +10,7 @@
 # end
 class User < ActiveRecord::Base
   has_one_attached :image
+  has_many :groups
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable

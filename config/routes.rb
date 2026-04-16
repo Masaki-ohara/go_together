@@ -20,13 +20,29 @@
 #   # Defines the root path route ("/")
 #   # root "posts#index"
 # end
+# Rails.application.routes.draw do
+#   namespace :api do
+#     namespace :v1 do
+#       mount_devise_token_auth_for "User", at: "auth", controllers: {
+#         registrations: "api/v1/auth/registrations"
+#       }
+#       resources :plans, only: [:create, :index, :show, :update]
+#       resources :groups
+#     end
+#   end
+# end
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       mount_devise_token_auth_for "User", at: "auth", controllers: {
-        registrations: "v1/auth/registrations"
+        registrations: "api/v1/auth/registrations"
       }
-      resources :plans, only: [:create, :index, :show, :update]
+
+      resources :groups do
+        resources :plans, only: [:index, :create]
+      end
+
+      resources :plans, only: [:show, :update]
     end
   end
 end

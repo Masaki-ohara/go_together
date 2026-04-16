@@ -1,4 +1,5 @@
 class Plan < ApplicationRecord
+    belongs_to :group, optional: true
     has_many :plan_items, dependent: :destroy
     validates :title, presence: true
     validates :location, presence: true
