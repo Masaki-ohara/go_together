@@ -4,7 +4,10 @@
 #       params.require(:registration).permit(:name, :email, :password, :password_confirmation, :image)
 #     end
 # end
-class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsController
+module Api
+  module V1
+    module Auth
+      class RegistrationsController < DeviseTokenAuth::RegistrationsController
 
   def create
     super do |resource|
@@ -26,5 +29,7 @@ class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsControll
   def account_update_params
     params.permit(:name, :email, :password, :password_confirmation, :image)
   end
-  
+end
+end
+end
 end
