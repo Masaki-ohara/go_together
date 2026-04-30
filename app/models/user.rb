@@ -1,16 +1,8 @@
-# # frozen_string_literal: true
-
-# class User < ActiveRecord::Base
-#   # Include default devise modules. Others available are:
-#   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-#   has_one_attached :image
-#   devise :database_authenticatable, :registerable,
-#          :recoverable, :rememberable, :validatable
-#   include DeviseTokenAuth::Concerns::User
-# end
 class User < ActiveRecord::Base
   has_one_attached :image
-  has_many :groups
+  has_many :user_groups, dependent: :destroy
+  has_many :groups, through: :user_groups
+  has_many :owned_groups, class_name: 'Group', foreign_key: 'user_id'
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -18,7 +10,7 @@ class User < ActiveRecord::Base
 
   def serializable_hash(options = nil)
     super({
-      only: [:id, :email, :name], # 必要な属性だけにする
+      only: [:id, :email, :name],
     }.merge(options || {}))
   end
 end

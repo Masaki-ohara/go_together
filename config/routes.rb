@@ -43,6 +43,8 @@ Rails.application.routes.draw do
       end
 
       resources :plans, only: [:show, :update]
+      post 'groups/join', to: 'groups#join'
+      get 'groups/:id/share_token', to: 'groups#share_token'
     end
   end
 end
