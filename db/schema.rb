@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_20_093558) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_23_144757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -70,6 +70,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_093558) do
     t.index ["group_id"], name: "index_plans_on_group_id"
   end
 
+  create_table "user_groups", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_user_groups_on_group_id"
+    t.index ["user_id"], name: "index_user_groups_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -100,4 +109,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_093558) do
   add_foreign_key "groups", "users"
   add_foreign_key "plan_items", "plans"
   add_foreign_key "plans", "groups"
+  add_foreign_key "user_groups", "groups"
+  add_foreign_key "user_groups", "users"
 end
