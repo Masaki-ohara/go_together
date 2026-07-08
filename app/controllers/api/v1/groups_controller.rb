@@ -63,6 +63,15 @@ def show
   # 2. プラン一覧（ログイン後画面が絶対に必要としているデータ）
   plans_data = group.respond_to?(:plans) ? group.plans : []
 
+  plans_with_votes = group.plans.map do |plan|
+      {
+        id: plan.id,
+        title: plan.title,
+        # ⭕️ ここでプランごとの総投票数をカウントして React に渡します！
+        vote_count: plan.votes.count 
+      }
+    end
+
   # 3. ログイン後画面（React）が壊れないように、元のグループ情報もすべて混ぜて返す
   render json: {
     id: group.id,
@@ -70,7 +79,8 @@ def show
     created_at: group.created_at,
     updated_at: group.updated_at,
     users: users_with_images, # 画像付きメンバー
-    plans: plans_data         # プラン一覧
+    plans: plans_data,       # プラン一覧
+    plans: plans_with_votes
   }, status: :ok
 rescue => e
   logger.error "Groups Show Error: #{e.message}"
