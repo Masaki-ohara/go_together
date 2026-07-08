@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :user_groups, dependent: :destroy
   has_many :groups, through: :user_groups
   has_many :owned_groups, class_name: 'Group', foreign_key: 'user_id'
+  has_many :votes, dependent: :destroy
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
