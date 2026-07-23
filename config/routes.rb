@@ -39,7 +39,7 @@ Rails.application.routes.draw do
       }
 
       resources :groups do
-        resources :plans, only: [:index, :create]
+        resources :plans, only: [:index, :create, :update, :destroy]
       end
 
       resources :plans, only: [:show, :update]
@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       get 'groups/:id/share_token', to: 'groups#share_token'
       resources :plans, only: [] do
         resources :votes, only: [:create, :destroy]
+        resources :deadlines, only: [:create, :update, :destroy]
       end
     end
   end

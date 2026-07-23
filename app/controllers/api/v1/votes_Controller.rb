@@ -4,7 +4,13 @@ class Api::V1::VotesController < ApplicationController
 
     def create
         plan = Plan.find(params[:plan_id])
+        group = plan.group
         vote = plan.votes.build(user: current_api_v1_user)
+
+        if group.deadline.present? && Time.current > group.deadline
+            render json: { errors: ['投票期間は終了しました'] }, status: :unprocessable_entity
+        return
+        end
         
         if vote.save
             render json: { message: '投票が正常に行われました' }, status: :created

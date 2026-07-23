@@ -86,6 +86,15 @@ rescue => e
   logger.error "Groups Show Error: #{e.message}"
   render json: { error: e.message }, status: :internal_server_error
 end
+
+def update
+    group = current_api_v1_user.groups.find(params[:id])
+    if group.update(group_params)
+        render json: { message: 'グループ情報が正常に更新されました', group: group }, status: :ok
+    else
+        render json: { errors: group.errors.full_messages }, status: :unprocessable_entity
+    end
+end
 #     def show
 #         group = current_api_v1_user.groups.find(params[:id])
     
@@ -157,6 +166,6 @@ end
 
     private
     def group_params
-        params.require(:group).permit(:name)
+        params.require(:group).permit(:name, :share_token, :deadline)
     end
 end
