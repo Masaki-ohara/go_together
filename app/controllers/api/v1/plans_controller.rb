@@ -14,32 +14,30 @@ module Api
             #         render json: { errors: "プランの作成に失敗しました。" }, status: :unprocessable_entity
             #     end
             # end
-
             def create
                 group = current_api_v1_user.groups.find(params[:group_id])
-                 plan = group.plans.build(plan_params)
+                plan = group.plans.build(plan_params)
             if plan.save
-    params[:lists]&.each do |content|
-      next if content.blank?
-      plan.plan_items.create(content: content)
+                params[:lists]&.each do |content|
+                    next if content.blank?
+                    plan.plan_items.create(content: content)
+            end
+             render json: { message: 'プランが正常に作成されました' }, status: :created
+        else
+            Rails.logger.error("❌ ユーザー登録エラーの中身: #{@user.errors.full_messages}")
+            render json: { errors: "プランの作成に失敗しました。" }, status: :unprocessable_entity
+        end
     end
-
-    render json: { message: 'プランが正常に作成されました' }, status: :created
-  else
-    render json: { errors: "プランの作成に失敗しました。" }, status: :unprocessable_entity
-  end
-end
             # def index
             #     plans = Plan.all
             #     render json: plans, status: :ok
             # end
-
             def index
                 group = current_api_v1_user.groups.find(params[:group_id])
                 plans = group.plans
-                
-                render json: plans
-        end
+                deadline = group.deadline
+                render json: { plans: plans, deadline: deadline }, status: :ok
+            end
 
             def show
                 plan = Plan.find(params[:id])
