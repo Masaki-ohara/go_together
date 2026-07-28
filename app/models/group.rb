@@ -8,7 +8,7 @@ class Group < ApplicationRecord
 
   # 元々のリーダー（作成者）との紐付け（必要なら残す）
   belongs_to :user, optional: true
-  
+
   has_many :plans, dependent: :destroy
 
   private
