@@ -22,11 +22,11 @@ module Api
                     next if content.blank?
                     plan.plan_items.create(content: content)
             end
-             render json: { message: 'プランが正常に作成されました' }, status: :created
-        else
+             render json: { message: "プランが正常に作成されました" }, status: :created
+            else
             Rails.logger.error("❌ ユーザー登録エラーの中身: #{@user.errors.full_messages}")
             render json: { errors: "プランの作成に失敗しました。" }, status: :unprocessable_entity
-        end
+            end
     end
             # def index
             #     plans = Plan.all
@@ -43,7 +43,7 @@ module Api
                 plan = Plan.find(params[:id])
                 render json: plan, include: :plan_items, status: :ok
             end
-            
+
             def update
                 plan = Plan.find(params[:id])
                 if plan.update(plan_params)
@@ -56,17 +56,17 @@ module Api
             def destroy
               plan = Plan.find(params[:id])
                 if plan.destroy
-                    render json: { message: 'プランが正常に削除されました' }, status: :ok
+                    render json: { message: "プランが正常に削除されました" }, status: :ok
                 else
                     render json: { errors: plan.errors.full_messages }, status: :unprocessable_entity
-                end 
+                end
             end
-            
+
             private
-            
+
             def plan_params
-                params.require(:plan).permit(:date, :location, :budget, :title, plan_items_attributes: [:id, :content, :_destroy])
+                params.require(:plan).permit(:date, :location, :budget, :title, plan_items_attributes: [ :id, :content, :_destroy ])
             end
         end
     end
-end 
+end

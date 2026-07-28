@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   has_one_attached :image
   has_many :user_groups, dependent: :destroy
   has_many :groups, through: :user_groups
-  has_many :owned_groups, class_name: 'Group', foreign_key: 'user_id'
+  has_many :owned_groups, class_name: "Group", foreign_key: "user_id"
   has_many :votes, dependent: :destroy
 
   devise :database_authenticatable, :registerable,
@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
 
   def serializable_hash(options = nil)
     super({
-      only: [:id, :email, :name],
+      only: [ :id, :email, :name ]
     }.merge(options || {}))
   end
 end

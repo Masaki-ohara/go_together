@@ -8,7 +8,6 @@ module Api
   module V1
     module Auth
       class RegistrationsController < DeviseTokenAuth::RegistrationsController
-
         def create
           super do |resource|
             if resource.persisted?
@@ -37,7 +36,6 @@ module Api
         def account_update_params
           params.permit(:name, :email, :password, :password_confirmation, :image)
         end
-
       end
     end
   end

@@ -15,7 +15,7 @@ class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsControll
       end
     end
   end
-  
+
   private
 
   def sign_up_params
@@ -25,5 +25,4 @@ class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsControll
   def account_update_params
     params.permit(:name, :email, :password, :password_confirmation, :image)
   end
-  
 end
