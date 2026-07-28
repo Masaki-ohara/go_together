@@ -42,12 +42,13 @@ Rails.application.routes.draw do
         resources :plans, only: [:index, :create, :update, :destroy]
       end
 
-      resources :plans, only: [:show, :update]
+      resources :plans, only: [:show, :update, :destroy]
       post 'groups/join', to: 'groups#join'
       get 'groups/:id/share_token', to: 'groups#share_token'
       resources :plans, only: [] do
         resources :votes, only: [:create, :destroy]
         resources :deadlines, only: [:create, :update, :destroy]
+        resources :vote_results, only: [:index]
       end
     end
   end

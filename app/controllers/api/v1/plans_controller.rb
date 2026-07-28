@@ -53,9 +53,14 @@ module Api
                 end
             end
 
-            # def destroy
-            #   plan = Plan.find(params[:id])
-            # end
+            def destroy
+              plan = Plan.find(params[:id])
+                if plan.destroy
+                    render json: { message: 'プランが正常に削除されました' }, status: :ok
+                else
+                    render json: { errors: plan.errors.full_messages }, status: :unprocessable_entity
+                end 
+            end
             
             private
             

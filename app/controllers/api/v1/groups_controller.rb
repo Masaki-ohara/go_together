@@ -80,7 +80,8 @@ def show
     updated_at: group.updated_at,
     users: users_with_images, # 画像付きメンバー
     plans: plans_data,       # プラン一覧
-    plans: plans_with_votes
+    plans: plans_with_votes,
+    deadline: group.deadline 
   }, status: :ok
 rescue => e
   logger.error "Groups Show Error: #{e.message}"
