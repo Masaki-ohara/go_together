@@ -11,6 +11,8 @@ class Group < ApplicationRecord
 
   has_many :plans, dependent: :destroy
 
+  has_one :schedule, dependent: :destroy
+
   private
 
   def generate_share_token
