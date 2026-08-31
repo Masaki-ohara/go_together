@@ -76,6 +76,9 @@ def show
   render json: {
     id: group.id,
     name: group.name,
+    share_token: group.share_token,
+    user_id: group.user_id, # 👈 追加: 作成者のID
+    is_owner: group.user_id == current_api_v1_user.id,
     created_at: group.created_at,
     updated_at: group.updated_at,
     users: users_with_images, # 画像付きメンバー
