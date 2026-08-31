@@ -18,6 +18,11 @@ module Api
       # ⭕️ 1. スケジュールを新規作成・上書き保存する
       def create
         group = current_api_v1_user.groups.find(params[:group_id])
+
+        # 👈 1. グループの作成者（group.user_id）か判定するチェックを追加
+        if group.user_id != current_api_v1_user.id
+          return render json: { error: "スケジュールの作成権限がありません" }, status: :forbidden
+        end
         
         # すでにグループにスケジュールがあれば上書き、無ければ新しく作る
         schedule = group.schedule || group.build_schedule
