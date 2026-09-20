@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
       resources :groups do
         resources :plans, only: [ :index, :create, :update, :destroy ]
-        resources :schedules, only: [ :create, :update, :destroy ]
+        resources :schedules, only: [ :create, :update, :destroy, :index, :show ]
       end
 
       resources :plans, only: [ :show, :update, :destroy ]
@@ -49,7 +49,6 @@ Rails.application.routes.draw do
       resources :plans, only: [] do
         resources :votes, only: [ :create, :destroy ]
         resources :deadlines, only: [ :create, :update, :destroy ]
-        resources :vote_results, only: [ :index ]
       end
     end
   end

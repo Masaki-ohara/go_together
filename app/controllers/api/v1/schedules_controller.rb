@@ -41,7 +41,7 @@ module Api
         schedule = group.schedule
         
         if schedule
-          render json: schedule, include: :schedule_items, status: :ok
+          render json: schedule, include: [:schedule_items, :plan], status: :ok
         else
           render json: { message: "まだスケジュールが確定していません" }, status: :not_found
         end
@@ -51,7 +51,7 @@ module Api
         group = current_api_v1_user.groups.find(params[:group_id])
         schedule = group.schedule
         if schedule
-            render json: schedule, include: :schedule_items, status: :ok
+           render json: schedule, include: [:schedule_items, :plan], status: :ok
         else
             render json: { message: "まだスケジュールが確定していません" }, status: :not_found
         end
@@ -62,7 +62,7 @@ module Api
       # ストロングパラメータ（セキュリティ許可）
       def schedule_params
         params.require(:schedule).permit(
-          :title, :date,
+          :title, :date, :location, :budget, :plan_id,
           # 子要素（時間と行動のリスト）の一括保存・削除を許可する
           schedule_items_attributes: [:id, :start_time, :end_time, :content, :_destroy]
         )

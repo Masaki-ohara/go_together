@@ -3,6 +3,7 @@ class Plan < ApplicationRecord
     has_many :plan_items, dependent: :destroy
     has_many :votes, dependent: :destroy
     has_many :voted_users, through: :votes, source: :user
+    has_one :schedule, dependent: :destroy #
     validates :title, presence: true
     validates :location, presence: true
     validates :budget, presence: true

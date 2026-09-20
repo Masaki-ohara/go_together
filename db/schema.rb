@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_125602) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_18_141621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,7 +88,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_125602) do
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "plan_id"
     t.index ["group_id"], name: "index_schedules_on_group_id"
+    t.index ["plan_id"], name: "index_schedules_on_plan_id"
   end
 
   create_table "user_groups", force: :cascade do |t|
@@ -141,6 +143,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_125602) do
   add_foreign_key "plans", "groups"
   add_foreign_key "schedule_items", "schedules"
   add_foreign_key "schedules", "groups"
+  add_foreign_key "schedules", "plans"
   add_foreign_key "user_groups", "groups"
   add_foreign_key "user_groups", "users"
   add_foreign_key "votes", "plans"
