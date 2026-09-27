@@ -27,12 +27,20 @@ module Api
         # すでにグループにスケジュールがあれば上書き、無ければ新しく作る
         schedule = group.schedule || group.build_schedule
         
-        if schedule.update(schedule_params)
-          # 画面表示に必要な schedule_items も一緒にまとめてReactに返す
-          render json: schedule, include: :schedule_items, status: :ok
-        else
-          render json: { errors: schedule.errors.full_messages }, status: :unprocessable_entity
+        ActiveRecord::Base.transaction do
+          if schedule.persisted?
+            schedule.schedule_items.destroy_all
+          end
+
+          if schedule.update(schedule_params)
+            # ⭕️ include に :plan を忘れないことで場所・予算が消えるのを防ぐ
+            render json: schedule.reload, include: [:schedule_items, :plan], status: :ok
+          else
+            render json: { errors: schedule.errors.full_messages }, status: :unprocessable_entity
+          end
         end
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       # ⭕️ 2. 確定したスケジュールを画面に表示するために取得する
@@ -41,7 +49,7 @@ module Api
         schedule = group.schedule
         
         if schedule
-          render json: schedule, include: :schedule_items, status: :ok
+          render json: schedule, include: [:schedule_items, :plan], status: :ok
         else
           render json: { message: "まだスケジュールが確定していません" }, status: :not_found
         end
@@ -51,7 +59,7 @@ module Api
         group = current_api_v1_user.groups.find(params[:group_id])
         schedule = group.schedule
         if schedule
-            render json: schedule, include: :schedule_items, status: :ok
+           render json: schedule, include: [:schedule_items, :plan], status: :ok
         else
             render json: { message: "まだスケジュールが確定していません" }, status: :not_found
         end
@@ -62,7 +70,7 @@ module Api
       # ストロングパラメータ（セキュリティ許可）
       def schedule_params
         params.require(:schedule).permit(
-          :title, :date,
+          :title, :date, :location, :budget, :plan_id,
           # 子要素（時間と行動のリスト）の一括保存・削除を許可する
           schedule_items_attributes: [:id, :start_time, :end_time, :content, :_destroy]
         )
