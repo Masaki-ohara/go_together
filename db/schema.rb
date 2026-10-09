@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_18_141621) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_07_032623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_18_141621) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "time"
+    t.string "start_time"
+    t.string "end_time"
+    t.string "category"
     t.index ["plan_id"], name: "index_plan_items_on_plan_id"
   end
 
@@ -69,6 +72,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_18_141621) do
     t.datetime "updated_at", null: false
     t.string "title"
     t.bigint "group_id"
+    t.string "created_by"
+    t.text "prompt"
     t.index ["group_id"], name: "index_plans_on_group_id"
   end
 

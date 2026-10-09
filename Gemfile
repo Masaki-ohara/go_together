@@ -41,7 +41,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem 'dotenv-rails'
 end
   gem "devise"
   gem "devise_token_auth"
   gem "rack-cors"
+  gem "gemini-ai"
