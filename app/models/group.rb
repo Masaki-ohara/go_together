@@ -10,7 +10,6 @@ class Group < ApplicationRecord
   belongs_to :user, optional: true
 
   has_many :plans, dependent: :destroy
-
   has_one :schedule, dependent: :destroy
 
   private

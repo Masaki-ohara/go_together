@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       resources :groups do
         resources :plans, only: [ :index, :create, :update, :destroy ]
         resources :schedules, only: [ :create, :update, :destroy, :index, :show ]
+        resources :ai_plans, only: [:create]
       end
 
       resources :plans, only: [ :show, :update, :destroy ]
