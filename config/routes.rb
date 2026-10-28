@@ -41,14 +41,14 @@ Rails.application.routes.draw do
       resources :groups do
         resources :plans, only: [ :index, :create, :update, :destroy ]
         resources :schedules, only: [ :create, :update, :destroy, :index, :show ]
-        resources :ai_plans, only: [:create]
+        resources :ai_plans, only: [ :create ]
       end
 
       resources :plans, only: [ :show, :update, :destroy ]
       post "groups/join", to: "groups#join"
       get "groups/:id/share_token", to: "groups#share_token"
       resources :plans, only: [] do
-        resources :votes, only: [ :create, :destroy ]
+        resources :votes, only: [ :create, :destroy, :index ]
         resources :deadlines, only: [ :create, :update, :destroy ]
       end
     end

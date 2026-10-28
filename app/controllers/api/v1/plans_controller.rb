@@ -17,7 +17,7 @@ module Api
             def create
                 group = current_api_v1_user.groups.find(params[:group_id])
                 plan = group.plans.build(plan_params)
-                
+
                 if plan.save
                   # ⭕️ params[:lists] から安全にデータを取り出すループ処理
                   params[:lists]&.each do |item|
@@ -29,9 +29,9 @@ module Api
                       content_text = item[:text] || item[:content]
                       time_zone = item[:time]
                     end
-                    
+
                     next if content_text.blank?
-                    
+
                     # ⭕️ 新しい time カラムと content カラムにそれぞれ直接保存！
                     plan.plan_items.create(content: content_text, time: time_zone)
                   end
@@ -47,11 +47,37 @@ module Api
             #     plans = Plan.all
             #     render json: plans, status: :ok
             # end
+            # def index
+            #     group = current_api_v1_user.groups.find(params[:group_id])
+            #     plans = group.plans
+            #     deadline = group.deadline
+            #     render json: { plans: plans, deadline: deadline }, status: :ok
+            # end
             def index
                 group = current_api_v1_user.groups.find(params[:group_id])
-                plans = group.plans
+                # 直近（最新）で確定したスケジュールを取得
+                latest_schedule = group.schedules.order(created_at: :desc).first
+                 if latest_schedule
+                    # ⭕️ 最新スケジュール確定日より後に作られたプランだけを取得（1回目のプランを全除外）
+                    plans = group.plans.where("created_at > ?", latest_schedule.created_at).order(created_at: :desc)
+                 else
+                    # まだ1回も確定していない場合は全プランを取得
+                    plans = group.plans.order(created_at: :desc)
+                 end
+
                 deadline = group.deadline
-                render json: { plans: plans, deadline: deadline }, status: :ok
+                # ⭕️ schedules_count を含めてレスポンスを返す
+                # render json: {
+                #      plans: plans,
+                #       deadline: deadline,
+                #       schedules_count: group.schedules.count
+                #       }, status: :ok
+                # ⭕️ 投票データ（votes）や投票数も一緒にレスポンスに含めるようにする
+                render json: {
+                    plans: plans.as_json(include: { votes: { only: [ :id, :user_id ] }, plan_items: {} }),
+                    deadline: deadline,
+                    schedules_count: group.schedules.count
+                }, status: :ok
             end
 
             def show

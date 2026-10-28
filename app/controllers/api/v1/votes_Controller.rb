@@ -93,18 +93,49 @@
 class Api::V1::VotesController < ApplicationController
   before_action :authenticate_api_v1_user!
 
+  # def create
+  #   plan = Plan.find(params[:plan_id])
+  #   group = plan.group
+  #   vote = plan.votes.create(user: current_api_v1_user)
+
+  #   if group.deadline.present? && Time.current > group.deadline
+  #     render json: { errors: [ "投票期間は終了しました" ] }, status: :unprocessable_entity
+  #     return
+  #   end
+
+  #   if vote.save
+  #     # 💡 修正: plan.vote.count -> plan.votes.count (複数形に修正)
+  #     render json: {
+  #       message: "投票が正常に行われました",
+  #       vote_count: plan.votes.count,
+  #       voted: true
+  #     }, status: :created
+  #   else
+  #     render json: { errors: vote.errors.full_messages }, status: :unprocessable_entity
+  #   end
+  # end
+
   def create
     plan = Plan.find(params[:plan_id])
     group = plan.group
-    vote = plan.votes.create(user: current_api_v1_user)
 
+    # 1. 締め切りチェックを先に行う
     if group.deadline.present? && Time.current > group.deadline
       render json: { errors: [ "投票期間は終了しました" ] }, status: :unprocessable_entity
       return
     end
 
+    # 2. 直近のスケジュール（確定日時）以降に作られたプランかチェック
+    latest_schedule_time = group.schedules.maximum(:created_at)
+    if latest_schedule_time && plan.created_at < latest_schedule_time
+      render json: { errors: [ "前回のラウンドですでに確定したプランには投票できません" ] }, status: :unprocessable_entity
+      return
+    end
+
+    # 3. 期限・ラウンドチェックを通過してから投票を作成
+    vote = plan.votes.new(user: current_api_v1_user)
+
     if vote.save
-      # 💡 修正: plan.vote.count -> plan.votes.count (複数形に修正)
       render json: {
         message: "投票が正常に行われました",
         vote_count: plan.votes.count,
@@ -133,7 +164,7 @@ class Api::V1::VotesController < ApplicationController
     end
   end
 
-  def result
+  def index
     plan = Plan.find(params[:plan_id])
     render json: { vote_count: plan.votes.count }, status: :ok
   end

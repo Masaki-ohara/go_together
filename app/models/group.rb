@@ -10,7 +10,9 @@ class Group < ApplicationRecord
   belongs_to :user, optional: true
 
   has_many :plans, dependent: :destroy
-  has_one :schedule, dependent: :destroy
+  # has_one :schedule, dependent: :destroy
+  # グループ一つで複数のスケジュールを持てるようにするため、has_oneからhas_manyに変更
+  has_many :schedules, dependent: :destroy
 
   private
 
