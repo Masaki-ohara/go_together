@@ -42,7 +42,7 @@ module Api
           @plan.save!
         end
 
-        render json: @plan, include: [:plan_items], status: :created
+        render json: @plan, include: [ :plan_items ], status: :created
 
       rescue ActiveRecord::RecordNotFound => e
         render json: { error: "指定されたグループが見つかりません" }, status: :not_found
@@ -55,7 +55,7 @@ module Api
       private
 
       def ai_plan_params
-        params.permit(:location, :budget, :theme, :date, :group_id, :item_count, prompt: [:location, :budget, :theme])
+        params.permit(:location, :budget, :theme, :date, :group_id, :item_count, prompt: [ :location, :budget, :theme ])
       end
     end
   end

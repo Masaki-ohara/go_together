@@ -61,7 +61,7 @@
 
 #     raw_text = response.dig("candidates", 0, "content", "parts", 0, "text")
 #     clean_json_text = raw_text.gsub(/```json|```/, "").strip
-    
+
 #     JSON.parse(clean_json_text, symbolize_names: true)
 #   rescue => e
 #     Rails.logger.error("Gemini API Error: #{e.message}")
@@ -276,7 +276,7 @@
 #         retries += 1
 #         # 次のリトライでは配列の次のモデル（フォールバックモデル）を使用する
 #         model_index = [model_index + 1, MODELS.size - 1].min
-        
+
 #         Rails.logger.warn("Gemini API Retry (#{retries}/#{MAX_RETRIES}) using #{MODELS[model_index]}: #{e.message}")
 #         # リトライ間隔を空けて再実行（1回目: 2秒, 2回目: 4秒...）
 #         sleep RETRY_DELAY * retries
@@ -299,8 +299,8 @@ class AiPlanGeneratorService
   MAX_RETRIES = 3
   RETRY_DELAY = 2
 
-  # 実在するGeminiモデルのみを指定
- # v1beta で確実に通るモデル識別子を指定
+# 実在するGeminiモデルのみを指定
+# v1beta で確実に通るモデル識別子を指定
 MODELS = [
   "gemini-3.7-flash"
   ].freeze
@@ -352,7 +352,7 @@ MODELS = [
     body = {
       contents: [
         {
-          parts: [{ text: prompt }]
+          parts: [ { text: prompt } ]
         }
       ],
       generationConfig: {
@@ -378,7 +378,7 @@ MODELS = [
 
       response = http.request(request)
 
-      if [503, 429].include?(response.code.to_i)
+      if [ 503, 429 ].include?(response.code.to_i)
         raise "Gemini API Temporary Error (HTTP #{response.code})"
       end
 
@@ -396,7 +396,7 @@ MODELS = [
     rescue Net::ReadTimeout, Net::OpenTimeout => e
       if retries < MAX_RETRIES
         retries += 1
-        model_index = [model_index + 1, MODELS.size - 1].min
+        model_index = [ model_index + 1, MODELS.size - 1 ].min
         Rails.logger.warn("Gemini API Timeout Retry (#{retries}/#{MAX_RETRIES}) using #{MODELS[model_index]}: #{e.message}")
         sleep RETRY_DELAY * retries
         retry
@@ -406,8 +406,8 @@ MODELS = [
     rescue => e
       if retries < MAX_RETRIES && (e.message.include?("Temporary Error") || e.is_a?(JSON::ParserError))
         retries += 1
-        model_index = [model_index + 1, MODELS.size - 1].min
-        
+        model_index = [ model_index + 1, MODELS.size - 1 ].min
+
         Rails.logger.warn("Gemini API Retry (#{retries}/#{MAX_RETRIES}) using #{MODELS[model_index]}: #{e.message}")
         sleep RETRY_DELAY * retries
         retry
