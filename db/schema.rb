@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_07_032623) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_28_011102) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,6 +98,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_07_032623) do
     t.index ["plan_id"], name: "index_schedules_on_plan_id"
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.bigint "schedule_id", null: false
+    t.bigint "user_id", null: false
+    t.string "role", null: false
+    t.text "description"
+    t.boolean "completed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["schedule_id"], name: "index_tasks_on_schedule_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
+  end
+
   create_table "user_groups", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "group_id", null: false
@@ -149,6 +161,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_07_032623) do
   add_foreign_key "schedule_items", "schedules"
   add_foreign_key "schedules", "groups"
   add_foreign_key "schedules", "plans"
+  add_foreign_key "tasks", "schedules"
+  add_foreign_key "tasks", "users"
   add_foreign_key "user_groups", "groups"
   add_foreign_key "user_groups", "users"
   add_foreign_key "votes", "plans"
