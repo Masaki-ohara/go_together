@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   has_many :groups, through: :user_groups
   has_many :owned_groups, class_name: "Group", foreign_key: "user_id"
   has_many :votes, dependent: :destroy
+  has_many :tasks, dependent: :destroy
+  has_many :schedules, through: :tasks
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
