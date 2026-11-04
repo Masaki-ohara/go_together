@@ -103,6 +103,21 @@ module Api
                 end
             end
 
+            # 例: plans_controller.rb にアクションを追加する場合
+            def select_winner
+                plan = Plan.find(params[:id])
+                
+                ActiveRecord::Base.transaction do
+                    # 一旦、同じグループ内の全プランのis_winnerをfalseにする
+                    plan.group.plans.update_all(is_winner: false)
+                    
+                    # 選択されたプランをtrueにする（コメントアウトを解除！）
+                    plan.update!(is_winner: true)
+                end
+                
+                render json: { status: "success", plan: plan }
+            end
+
             private
 
             def plan_params
