@@ -13,7 +13,7 @@ module Api
   module V1
     class SchedulesController < ApplicationController
       before_action :authenticate_api_v1_user!
-
+      
       # ⭕️ 1. スケジュールを新規作成・上書き保存する
       def create
         group = current_api_v1_user.groups.find(params[:group_id])
@@ -23,9 +23,40 @@ module Api
           return render json: { error: "スケジュールの作成権限がありません" }, status: :forbidden
         end
 
+        latest_schedule_time = group.schedules.maximum(:created_at)
+        target_plans = if latest_schedule_time
+           group.plans.where("created_at > ?", latest_schedule_time)
+          else
+            group.plans
+          end
+          
+          if target_plans.empty?
+            return render json: { error: "対象となるプランがありません" }, status: :unprocessable_entity
+          end
+
         # すでにグループにスケジュールがあれば上書き、無ければ新しく作る
         # schedule = group.schedule || group.build_schedule
         schedule = group.schedules.build(schedule_params)
+
+        # 各プランの投票数を集計し、一番多い票数（最大値）を求める
+        max_votes = target_plans.map { |p| p.votes.count }.max || 0
+
+        # 最高票数を獲得しているプランをすべて集める
+        top_plans = target_plans.select { |p| p.votes.count == max_votes }
+
+        # 🎲 同票（複数）なら .sample でランダムに1つ絞り込む！ 単独ならそのまま！
+        winning_plan = if top_plans.count > 1
+                         top_plans.sample # 👈 ここでランダム抽選！
+                       else
+                         top_plans.first
+                       end
+        # ==========================================
+
+        # 2. 自動で決定した winning_plan を使ってスケジュールをビルドする
+        schedule = group.schedules.build(schedule_params)
+        schedule.plan = winning_plan
+        # タイトルが空ならwinning_planのタイトルを自動セットするなどの配慮も可能
+        schedule.title = winning_plan.title if schedule.title.blank?
 
           # ActiveRecord::Base.transaction do
           #   if schedule.persisted?
@@ -44,7 +75,7 @@ module Api
         render json: { error: e.message }, status: :unprocessable_entity
       end
 
-      # ⭕️ 2. 確定したスケジュールを画面に表示するために取得する
+      # # ⭕️ 2. 確定したスケジュールを画面に表示するために取得する
       def show
         group = current_api_v1_user.groups.find(params[:group_id])
         schedule = group.schedules.find(params[:id])
@@ -58,7 +89,7 @@ module Api
 
       def index
         group = current_api_v1_user.groups.find(params[:group_id])
-        schedules = group.schedules.includes(:plan).order(created_at: :desc)
+        schedules = group.schedules.includes(:plan).order(created_at: :asc)
         # schedules = group.schedules.order(created_at: :desc)
         # # schedule = group.schedule
         # if schedules.present?

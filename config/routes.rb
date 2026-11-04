@@ -51,6 +51,9 @@ Rails.application.routes.draw do
       post "groups/join", to: "groups#join"
       get "groups/:id/share_token", to: "groups#share_token"
       resources :plans, only: [] do
+        member do
+          post :select_winner
+        end
         resources :votes, only: [ :create, :destroy, :index ]
         resources :deadlines, only: [ :create, :update, :destroy ]
       end

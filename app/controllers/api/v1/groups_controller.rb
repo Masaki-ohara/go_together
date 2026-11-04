@@ -30,26 +30,26 @@ class Api::V1::GroupsController < ApplicationController
           image: user.image.attached? ? Rails.application.routes.url_helpers.rails_blob_path(user.image, only_path: true) : nil
         }
       end
-
-  # 2. プラン一覧（ログイン後画面が絶対に必要としているデータ）
-  # ⭕️ 1. 直近（最新）で確定したスケジュールを取得
-  latest_schedule = group.schedules.order(created_at: :desc).first
-
-  # ⭕️ 2. 最新スケジュールより後に作られたプランだけに絞り込み（1回目の古いプランを全除外）
-  target_plans = if latest_schedule
-                   group.plans.where("created_at > ?", latest_schedule.created_at).order(created_at: :desc)
-  else
-                   group.plans.order(created_at: :desc)
-  end
-
-  # 3. 絞り込んだプランに対して投票数をカウント
-  plans_with_votes = target_plans.map do |plan|
-      {
-        id: plan.id,
-        title: plan.title,
-        vote_count: plan.votes.count
-      }
-    end
+      
+      # 2. プラン一覧（ログイン後画面が絶対に必要としているデータ）
+       # ⭕️ 1. 直近（最新）で確定したスケジュールを取得
+       latest_schedule = group.schedules.order(created_at: :desc).first
+       # ⭕️ 2. 最新スケジュールより後に作られたプランだけに絞り込み（1回目の古いプランを全除外）
+       target_plans = if latest_schedule
+        group.plans.where("created_at > ?", latest_schedule.created_at).order(created_at: :desc)
+      else
+        group.plans.order(created_at: :desc)
+      end
+      
+      # 3. 絞り込んだプランに対して投票数をカウント
+      plans_with_votes = target_plans.map do |plan|
+        {
+          id: plan.id,
+          title: plan.title,
+          vote_count: plan.votes.count,
+          is_winner: plan.is_winner
+        }
+      end
   # plans_data = group.respond_to?(:plans) ? group.plans : []
 
   # plans_with_votes = group.plans.map do |plan|
