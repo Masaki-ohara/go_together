@@ -11,7 +11,11 @@ class Api::V1::TasksController < ApplicationController
       logger.error task.errors.full_messages
       render json: { errors: "タスクの作成に失敗しました。" }, status: :unprocessable_entity
     end
+  end
 
+  def show
+    task = Task.find(params[:id])
+    render json: task
   end
 
   def index
@@ -44,6 +48,17 @@ class Api::V1::TasksController < ApplicationController
     else
       logger.error task.errors.full_messages
       render json: { errors: "タスクの更新に失敗しました。" }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    schedule = Schedule.find(params[:schedule_id])
+    task = schedule.tasks.find(params[:id])
+    if task.destroy
+      render json: { message: "タスクが正常に削除されました" }, status: :ok
+    else
+      logger.error task.errors.full_messages
+      render json: { errors: "タスクの削除に失敗しました。" }, status: :unprocessable_entity
     end
   end
 
