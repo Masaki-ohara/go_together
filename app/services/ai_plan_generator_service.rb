@@ -296,14 +296,15 @@ require "uri"
 require "json"
 
 class AiPlanGeneratorService
-  MAX_RETRIES = 3
+  MAX_RETRIES = 1
   RETRY_DELAY = 2
 
 # 実在するGeminiモデルのみを指定
 # v1beta で確実に通るモデル識別子を指定
 MODELS = [
-  "gemini-3.7-flash"
-  ].freeze
+  "gemini-2.5-flash",
+  "gemini-2.5-pro"
+].freeze
 
   def initialize(location:, budget:, theme:, item_count: 3)
     @location = location
@@ -356,8 +357,8 @@ MODELS = [
         }
       ],
       generationConfig: {
-        response_mime_type: "application/json"
-      }
+         "responseMimeType" => "application/json"
+        }
     }
 
     retries = 0
@@ -370,13 +371,16 @@ MODELS = [
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
-      http.read_timeout = 120
+      http.read_timeout = 45
       http.open_timeout = 10
 
       request = Net::HTTP::Post.new(url.request_uri, { "Content-Type" => "application/json" })
       request.body = body.to_json
 
       response = http.request(request)
+
+      Rails.logger.info("Gemini API Request Model: #{current_model}")
+      Rails.logger.info("Gemini API Response Status: #{response.code}")
 
       if [ 503, 429 ].include?(response.code.to_i)
         raise "Gemini API Temporary Error (HTTP #{response.code})"
