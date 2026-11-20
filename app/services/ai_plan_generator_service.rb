@@ -376,10 +376,18 @@ MODELS = [
       request = Net::HTTP::Post.new(url.request_uri, { "Content-Type" => "application/json" })
       request.body = body.to_json
 
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      
       response = http.request(request)
-
+      
+      elapsed_time =
+      Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
       Rails.logger.info("Gemini API Request Model: #{current_model}")
       Rails.logger.info("Gemini API Response Status: #{response.code}")
+      Rails.logger.info("Gemini API Response Time: #{elapsed_time.round(2)} seconds")
+
+      # Rails.logger.info("Gemini API Request Model: #{current_model}")
+      # Rails.logger.info("Gemini API Response Status: #{response.code}")
 
       if [ 503, 429 ].include?(response.code.to_i)
         raise "Gemini API Temporary Error (HTTP #{response.code})"
