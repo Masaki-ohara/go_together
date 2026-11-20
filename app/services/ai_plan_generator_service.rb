@@ -302,7 +302,8 @@ class AiPlanGeneratorService
 # 実在するGeminiモデルのみを指定
 # v1beta で確実に通るモデル識別子を指定
 MODELS = [
-  "gemini-3.8-flash"
+  "gemini-3.8-flash",
+  "gemini-3.5-flash-lite"
 ].freeze
 
   def initialize(location:, budget:, theme:, item_count: 3)
