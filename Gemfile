@@ -70,10 +70,11 @@ gem "rack-cors"
 # Gemini API
 gem "gemini-ai"
 
+gem "cloudinary"
+
 group :development, :test do
   gem "debug", platforms: %i[mri mswin mswin64 mingw x64_mingw], require: "debug/prelude"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
   gem "dotenv-rails"
-  gem "cloudinary"
 end
