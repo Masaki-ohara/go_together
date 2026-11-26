@@ -17,9 +17,22 @@ class User < ActiveRecord::Base
     }.merge(options || {}))
   end
 
-    def token_validation_response
+  #   def token_validation_response
+  #   as_json(except: [:tokens, :created_at, :updated_at]).merge(
+  #     image: image.attached? ? Rails.application.routes.url_helpers.url_for(image) : nil
+  #   )
+  # end
+  def token_validation_response
+    image_url = if image.attached?
+      Rails.application.routes.url_helpers.rails_blob_url(
+        image,
+        host: "go-together-2kx6.onrender.com",
+        protocol: "https"
+      )
+    end
+
     as_json(except: [:tokens, :created_at, :updated_at]).merge(
-      image: image.attached? ? Rails.application.routes.url_helpers.url_for(image) : nil
+      image: image_url
     )
   end
 end
