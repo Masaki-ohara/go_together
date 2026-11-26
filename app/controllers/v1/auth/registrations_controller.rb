@@ -42,6 +42,15 @@ class V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsControll
     end
   end
 
+  def show
+  render json: {
+    id: current_user.id,
+    name: current_user.name,
+    email: current_user.email,
+    image: current_user.image.attached? ? url_for(current_user.image) : nil
+  }
+  end
+
   private
 
   def sign_up_params

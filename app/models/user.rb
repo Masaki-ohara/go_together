@@ -16,4 +16,10 @@ class User < ActiveRecord::Base
       only: [ :id, :email, :name ]
     }.merge(options || {}))
   end
+
+    def token_validation_response
+    as_json(except: [:tokens, :created_at, :updated_at]).merge(
+      image: image.attached? ? Rails.application.routes.url_helpers.url_for(image) : nil
+    )
+  end
 end
