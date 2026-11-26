@@ -95,5 +95,8 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-  config.action_controller.default_url_options = { host: "go-together-2kx6.onrender.com", protocol: "https" }
+  config.action_controller.default_url_options = {
+     host: "go-together-2kx6.onrender.com",
+     protocol: "https"
+    }
 end
